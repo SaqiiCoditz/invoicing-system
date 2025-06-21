@@ -92,6 +92,7 @@ document.getElementById("save-invoice-btn").addEventListener("click", function (
 };
 
 
+
     fetch("http://localhost:5000/api/invoices", {
         method: "POST",
         headers: {
