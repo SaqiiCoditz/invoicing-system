@@ -2,84 +2,322 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Saved Invoices - Dizzy Invoice System</title>
-    <link rel="stylesheet" href="styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All Invoices - Invoicing System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f9fafb;
+            color: #333;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #2563eb;
+            margin-bottom: 20px;
+        }
+
+        .search-bar {
+            margin-bottom: 15px;
+        }
+
+        .search-bar input {
+            padding: 8px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid #eee;
+            text-align: left;
+        }
+
+        th {
+            background: #f0f4ff;
+            color: #2563eb;
+        }
+
+        button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #2563eb;
+            color: white;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #1e40af;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 20px;
+            max-width: 850px;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: #f44336;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .download-btn {
+            margin-top: 10px;
+        }
+
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Saved Invoices</h1>
-        
-        <div class="actions">
-            <a href="index.html" style="text-decoration: none;" class="btn secondary">➕ Create New Invoice</a>
-            <button id="refresh-btn" class="btn">🔄 Refresh List</button>
-        </div>
 
-        <div class="responsive-table">
-            <table id="invoices-table" class="invoices-list">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Invoice No</th>
-                        <th>Client Name</th>
-                        <th>Date</th>
-                        <th>Total</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Dynamic Rows Here -->
-                </tbody>
-            </table>
+    <h1>All Invoices</h1>
+
+    <div class="search-bar">
+        <input type="text" id="search-input" placeholder="Search by client name..." />
+    </div>
+
+    <table id="invoice-table">
+        <thead>
+            <tr>
+                <th>Invoice Number</th>
+                <th>Date</th>
+                <th>Client Name</th>
+                <th>Total</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <!-- Modal for preview -->
+    <div class="modal" id="invoice-modal">
+        <div class="modal-content" id="modal-content">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <div id="invoice-preview"></div>
+            <button class="download-btn" onclick="downloadInvoice()">Download as PNG</button>
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
-        const API_URL = 'http://localhost:5000/api/invoices';
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchInvoices();
+            document.getElementById("search-input").addEventListener("input", filterInvoices);
+        });
 
         function fetchInvoices() {
-            fetch(API_URL)
+            fetch("http://localhost:5000/api/invoices")
                 .then(res => res.json())
                 .then(data => {
-                    const tableBody = document.querySelector("#invoices-table tbody");
-                    tableBody.innerHTML = '';
-
-                    if (data.length === 0) {
-                        tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No invoices found.</td></tr>';
-                        return;
-                    }
-
-                    data.forEach((invoice, index) => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${index + 1}</td>
-                            <td>${invoice.invoiceNumber}</td>
-                            <td>${invoice.clientName}</td>
-                            <td>${invoice.date}</td>
-                            <td>${invoice.total.toFixed(2)}</td>
-                            <td>
-                                <button class="btn secondary" onclick="viewInvoice(${invoice.id})">View</button>
-                            </td>
-                        `;
-                        tableBody.appendChild(row);
-                    });
+                    renderTable(data);
                 })
                 .catch(err => {
-                    console.error('❌ Error fetching invoices:', err);
+                    console.error("Error loading invoices:", err);
+                    alert("Failed to load invoices.");
                 });
         }
 
-        function viewInvoice(id) {
-            alert('👉 View Invoice ' + id + ' — You can add full-page preview feature here.');
-            // Future: open invoice preview
+        function renderTable(invoices) {
+            const tbody = document.querySelector("#invoice-table tbody");
+            tbody.innerHTML = "";
+
+            invoices.forEach(inv => {
+                const tr = document.createElement("tr");
+
+                // Format date to DD/MM/YYYY
+                const dateParts = inv.date.split("-");
+                const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+
+                tr.innerHTML = `
+                    <td>${inv.invoiceNumber}</td>
+                    <td>${formattedDate}</td>
+                    <td>${inv.clientName}</td>
+                    <td>${inv.total}</td>
+                    <td>
+                        <button onclick="previewInvoice(${inv.id})">View Invoice</button>
+                    </td>
+                `;
+
+                tbody.appendChild(tr);
+            });
         }
 
-        // On page load
-        window.addEventListener('DOMContentLoaded', () => {
-            fetchInvoices();
-        });
+        function previewInvoice(id) {
+            fetch(`http://localhost:5000/api/invoices/${id}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        showInvoiceModal(data.invoice);
+                    } else {
+                        alert("Error loading invoice.");
+                    }
+                })
+                .catch(err => {
+                    console.error("Error fetching invoice:", err);
+                    alert("Failed to load invoice.");
+                });
+        }
+function showInvoiceModal(invoice) {
+    const items = JSON.parse(invoice.items);
 
-        document.getElementById('refresh-btn').addEventListener('click', fetchInvoices);
+    // Format date to DD/MM/YYYY
+    const dateObj = new Date(invoice.date);
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const year = dateObj.getFullYear();
+    const formattedDate = `${day}/${month}/${year}`;
+
+    let html = `
+    <div style="
+        width: 300px;
+        height: auto;
+        padding: 30px;
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.1);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #333;
+        line-height: 1.6;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+    ">
+        <div style="flex: 1;">
+            <div style="text-align: flex-start; margin-bottom: 25px;">
+                <h1 style="color: #2563eb; margin: 0 0 5px; font-weight:bold;">Dizzy SMM</h1>
+                <p style="color: #2563eb; margin: 0 0 5px; font-weight:bold;" id="preview-invoice-id">${invoice.invoiceNumber}</p>
+                <p style="font-size: 1rem; color: #555;">Invoice Date: <strong>${formattedDate}</strong></p>
+                <p style="font-size: 1rem; color: #555;">Client: <strong>${invoice.clientName}</strong></p>
+            </div>
+
+            <table style="
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+                font-size: 1rem;
+            ">
+                <thead>
+                    <tr style="background: #f0f4ff;">
+                        <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Item Name</th>
+                        <th style="padding: 12px; border: 1px solid #ddd; text-align: right;">Price (PKR)</th>
+                    </tr>
+                </thead>
+                <tbody>
+`;
+
+items.forEach(item => {
+    html += `
+        <tr>
+            <td style="padding: 12px; border: 1px solid #f2f2f2;">${item.name}</td>
+            <td style="padding: 12px; border: 1px solid #f2f2f2; text-align: right;">${item.price.toFixed(2)}</td>
+        </tr>
+    `;
+});
+
+html += `
+                </tbody>
+            </table>
+        </div>
+
+        <div style="
+            text-align: right;
+            font-size: 1.6rem;
+            color: #2563eb;
+            border-top: 2px solid #eee;
+            padding-top: 15px;
+        ">
+            Total: PKR <strong>${invoice.total}</strong>
+        </div>
+
+        <div style="
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #999;
+        ">
+            Thank you for your business! 🚀<br>
+            <small>Generated by Invoicing System</small>
+        </div>
+    </div>
+`;
+
+
+    document.getElementById("invoice-preview").innerHTML = html;
+    document.getElementById("invoice-modal").style.display = "flex";
+}
+
+
+
+
+
+        function closeModal() {
+            document.getElementById("invoice-modal").style.display = "none";
+        }
+function downloadInvoice() {
+    const previewElement = document.getElementById("invoice-preview");
+
+    html2canvas(previewElement, { useCORS: true, scale: 2 }).then(canvas => {
+        const link = document.createElement("a");
+
+        // Get invoice number from h2 with id
+        const invoiceId = document.getElementById("preview-invoice-id").textContent.trim();
+
+        link.download = `${invoiceId}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+    }).catch(err => {
+        console.error("Failed to export invoice.", err);
+        alert("Failed to export invoice.");
+    });
+}
+
+
+
+
+        function filterInvoices() {
+            const query = document.getElementById("search-input").value.toLowerCase();
+            const rows = document.querySelectorAll("#invoice-table tbody tr");
+
+            rows.forEach(row => {
+                const clientName = row.children[2].textContent.toLowerCase();
+                row.style.display = clientName.includes(query) ? "" : "none";
+            });
+        }
+
     </script>
 </body>
 </html>
