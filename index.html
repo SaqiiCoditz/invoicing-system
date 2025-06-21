@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dizzy Invoice System</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="container" id="invoice-form">
+    <h1>Dizzy Invoice System</h1>
+
+    <div class="form-section">
+        <label>Business Name:</label>
+        <input type="text" id="business-name" value="Dizzy SMM" readonly />
+    </div>
+
+    <div class="form-section">
+        <label>Client Name:</label>
+        <input type="text" id="client-name" placeholder="Enter client name" />
+    </div>
+
+    <div class="form-section">
+        <label>Date:</label>
+        <input type="date" id="invoice-date" />
+    </div>
+
+    <div class="form-section">
+        <label>Invoice ID:</label>
+        <input type="text" id="invoice-id" readonly />
+    </div>
+
+    <h3>Invoice Items</h3>
+
+    <div class="form-section">
+        <label>Item Name:</label>
+        <input type="text" id="item-name" placeholder="Enter item name" />
+        
+        <label>Price:</label>
+        <input type="number" id="item-price" placeholder="Enter price" />
+        
+        <button class="btn secondary" id="add-item-btn">Add Item</button>
+    </div>
+
+    <table id="items-table">
+        <thead>
+            <tr>
+                <th>Item Name</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <div class="totals">
+        <h3>Total: PKR <span id="invoice-total">0</span></h3>
+    </div>
+
+    <div class="actions">
+        <button class="btn primary" id="save-invoice-btn">Save Invoice</button>
+        <button class="btn" id="preview-invoice-btn">Preview Invoice</button>
+        <button class="btn" id="export-png-btn">Export as PNG</button>
+    </div>
+</div>
+
+<!-- Invoice preview area -->
+<div class="container" id="invoice-preview" style="display:none; margin-top:30px;">
+    <h2>Invoice Preview</h2>
+    <div id="preview-content" style="padding:20px; border:1px solid var(--border-color); border-radius:8px;"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
