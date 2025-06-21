@@ -1,16 +1,31 @@
 let invoiceItems = [];
-let invoiceCounter = localStorage.getItem('invoiceCounter') || 1;
+let invoiceCounter = 1;
 
-// Auto-fill today's date
+// Auto-fetch Invoice Number from server
+fetch("http://localhost:5000/api/invoices/next-number")
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            const nextNumber = data.nextInvoiceNumber;
+            document.getElementById("invoice-id").value = `INV-${String(nextNumber).padStart(3, "0")}`;
+        } else {
+            alert("Error fetching invoice number from server.");
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Error connecting to server.");
+    });
+
+// Auto-fill today's date and invoice ID
 window.addEventListener("DOMContentLoaded", function () {
     const today = new Date().toISOString().substr(0, 10);
     document.getElementById("invoice-date").value = today;
 
-    // Auto-fill Invoice ID
-    document.getElementById("invoice-id").value = `DS-${String(invoiceCounter).padStart(4, "0")}`;
+    fetchNextInvoiceNumber(); // Fetch invoice number
 });
 
-//add items
+// Add items
 document.getElementById("add-item-btn").addEventListener("click", function () {
     const name = document.getElementById("item-name").value.trim();
     const price = parseFloat(document.getElementById("item-price").value);
@@ -21,12 +36,11 @@ document.getElementById("add-item-btn").addEventListener("click", function () {
     }
 
     invoiceItems.push({ name, price });
-
     updateItemsTable();
     clearItemInputs();
 });
 
-//update items table
+// Update items table
 function updateItemsTable() {
     const tbody = document.querySelector("#items-table tbody");
     tbody.innerHTML = "";
@@ -35,7 +49,7 @@ function updateItemsTable() {
         const row = document.createElement("tr");
         row.innerHTML = `
             <td>${item.name}</td>
-            <td>${item.price}</td>
+            <td>${item.price.toFixed(2)}</td>
             <td><button onclick="removeItem(${index})">Remove</button></td>
         `;
         tbody.appendChild(row);
@@ -45,19 +59,19 @@ function updateItemsTable() {
     document.getElementById("invoice-total").textContent = grandTotal.toFixed(2);
 }
 
-//clear items
+// Clear item inputs
 function clearItemInputs() {
     document.getElementById("item-name").value = "";
     document.getElementById("item-price").value = "";
 }
 
-//remove items
+// Remove item
 function removeItem(index) {
     invoiceItems.splice(index, 1);
     updateItemsTable();
 }
 
-//Save invoice
+// Save invoice
 document.getElementById("save-invoice-btn").addEventListener("click", function () {
     const clientName = document.getElementById("client-name").value.trim();
     const invoiceDate = document.getElementById("invoice-date").value;
@@ -67,31 +81,55 @@ document.getElementById("save-invoice-btn").addEventListener("click", function (
         return;
     }
 
-    const invoiceId = `INV-${String(invoiceCounter).padStart(4, "0")}`;
+    const invoiceId = document.getElementById("invoice-id").value;
 
-    const invoiceData = {
-        id: invoiceId,
-        businessName: document.getElementById("business-name").value,
-        clientName,
-        invoiceDate,
-        items: invoiceItems,
-        total: document.getElementById("invoice-total").textContent,
-        timestamp: new Date().toISOString(),
-    };
+  const invoiceData = {
+    invoiceNumber: invoiceId,
+    date: invoiceDate,
+    clientName: clientName,
+    items: invoiceItems.map(item => item.name).join(", "),  // ✅ only names
+    total: document.getElementById("invoice-total").textContent
+};
 
-    let savedInvoices = JSON.parse(localStorage.getItem("invoices") || "[]");
-    savedInvoices.push(invoiceData);
-    localStorage.setItem("invoices", JSON.stringify(savedInvoices));
 
-    invoiceCounter++;
-    localStorage.setItem("invoiceCounter", invoiceCounter);
+    fetch("http://localhost:5000/api/invoices", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(invoiceData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(`✅ Invoice saved to database! Invoice ID: ${invoiceId}`);
 
-    document.getElementById("invoice-id").value = `INV-${String(invoiceCounter).padStart(4, "0")}`;
+            // Increment invoice number after save
+            fetch("http://localhost:5000/api/invoices/next-number")
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const nextNumber = data.nextInvoiceNumber;
+                        document.getElementById("invoice-id").value = `INV-${String(nextNumber).padStart(3, "0")}`;
+                    }
+                });
 
-    alert(`Invoice saved! Invoice ID: ${invoiceData.id}`);
+            // Clear form
+            document.getElementById("client-name").value = "";
+            invoiceItems = [];
+            updateItemsTable();
+        } else {
+            alert("❌ Error saving invoice. Please try again.");
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert("❌ Server error saving invoice.");
+    });
 });
 
-// PREVIEW INVOICE
+
+// Preview invoice
 document.getElementById("preview-invoice-btn").addEventListener("click", function () {
     const clientName = document.getElementById("client-name").value.trim();
     const invoiceDate = document.getElementById("invoice-date").value;
@@ -166,9 +204,7 @@ document.getElementById("preview-invoice-btn").addEventListener("click", functio
     document.getElementById("invoice-preview").style.display = "block";
 });
 
-
-
-// EXPORT PNG
+// Export PNG
 document.getElementById("export-png-btn").addEventListener("click", function () {
     html2canvas(document.getElementById("preview-content")).then(canvas => {
         const link = document.createElement("a");
