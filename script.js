@@ -85,7 +85,7 @@ document.getElementById("save-invoice-btn").addEventListener("click", function (
     invoiceNumber: invoiceId,
     date: invoiceDate,
     clientName: clientName,
-    items: invoiceItems.map(item => item.name).join(", "),  // ✅ only names
+    items: JSON.stringify(invoiceItems), // ✅ only names
     total: document.getElementById("invoice-total").textContent
 };
 
