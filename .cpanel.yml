@@ -1,0 +1,8 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/dizzysmm/invoice.learnwithsaqii.online
+    - /bin/cp -R * $DEPLOYPATH
+    - /bin/cp -R .htaccess $DEPLOYPATH || true
+    - cd $DEPLOYPATH && npm install
+    - cd $DEPLOYPATH && npx pm2 start server.js --name "invoice_backend" --watch

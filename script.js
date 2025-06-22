@@ -21,8 +21,6 @@ fetch("https://invoice.learnwithsaqii.online/api/invoices/next-number")
 window.addEventListener("DOMContentLoaded", function () {
     const today = new Date().toISOString().substr(0, 10);
     document.getElementById("invoice-date").value = today;
-
-    fetchNextInvoiceNumber(); // Fetch invoice number
 });
 
 // Add items
