@@ -315,15 +315,22 @@ function downloadInvoice() {
 
 
 
-        function filterInvoices() {
-            const query = document.getElementById("search-input").value.toLowerCase();
-            const rows = document.querySelectorAll("#invoice-table tbody tr");
+function filterInvoices() {
+    const query = document.getElementById("search-input").value.toLowerCase();
+    const rows = document.querySelectorAll("#invoice-table tbody tr");
 
-            rows.forEach(row => {
-                const clientName = row.children[2].textContent.toLowerCase();
-                row.style.display = clientName.includes(query) ? "" : "none";
-            });
+    rows.forEach(row => {
+        const invoiceNumber = row.children[0].textContent.toLowerCase();
+        const clientName = row.children[2].textContent.toLowerCase();
+
+        // Show if query matches either Invoice Number OR Client Name
+        if (invoiceNumber.includes(query) || clientName.includes(query)) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
         }
+    });
+}
 
     </script>
 </body>
