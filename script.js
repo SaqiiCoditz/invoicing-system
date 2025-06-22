@@ -162,7 +162,7 @@ document.getElementById("preview-invoice-btn").addEventListener("click", functio
         <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; border-bottom:2px solid #2563eb; padding-bottom:15px; margin-bottom:25px;">
             <div style="flex:1 1 50%;">
                 <h2 style="color:#2563eb; margin:0;">${document.getElementById("business-name").value}</h2>
-                <p style="margin:10px 0 0;">Invoice ID: <strong>${invoiceId}</strong></p>
+                <p style="margin:10px 0 0;">ID: <strong>${invoiceId}</strong></p>
                 <p style="margin:4px 0;">Date: <strong>${invoiceDate}</strong></p>
             </div>
             <div style="flex:1 1 40%; text-align:right;">
