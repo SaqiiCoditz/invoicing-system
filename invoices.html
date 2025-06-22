@@ -178,7 +178,9 @@
 function previewInvoice(id) {
     fetch(`https://invoice.learnwithsaqii.online/api/invoices/${id}`)
         .then(res => {
-            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status} ${res.statusText}`);
+            }
             return res.json();
         })
         .then(data => {
@@ -190,9 +192,10 @@ function previewInvoice(id) {
         })
         .catch(err => {
             console.error("Error fetching invoice:", err);
-            alert("Failed to load invoice.");
+            alert("Failed to load invoice: " + err.message);
         });
 }
+
 
 function showInvoiceModal(invoice) {
     const items = JSON.parse(invoice.items);
