@@ -1,5 +1,5 @@
-CREATE DATABASE invoicing_db;
-USE invoicing_db;
+-- CREATE DATABASE invoicing_db;
+-- USE invoicing_db;
 
 CREATE TABLE invoices (
     id INT AUTO_INCREMENT PRIMARY KEY,
