@@ -175,22 +175,25 @@
             });
         }
 
-        function previewInvoice(id) {
-            fetch(`https://invoice.learnwithsaqii.online/api/invoices/${id}`)
+function previewInvoice(id) {
+    fetch(`https://invoice.learnwithsaqii.online/api/invoices/${id}`)
+        .then(res => {
+            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+            return res.json();
+        })
+        .then(data => {
+            if (data.success) {
+                showInvoiceModal(data.invoice);
+            } else {
+                alert("Error loading invoice: " + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(err => {
+            console.error("Error fetching invoice:", err);
+            alert("Failed to load invoice.");
+        });
+}
 
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        showInvoiceModal(data.invoice);
-                    } else {
-                        alert("Error loading invoice.");
-                    }
-                })
-                .catch(err => {
-                    console.error("Error fetching invoice:", err);
-                    alert("Failed to load invoice.");
-                });
-        }
 function showInvoiceModal(invoice) {
     const items = JSON.parse(invoice.items);
 
