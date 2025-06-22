@@ -1,8 +1,9 @@
 let invoiceItems = [];
 let invoiceCounter = 1;
+const API_URL = "https://invoice.learnwithsaqii.online/api/invoices";
 
 // Auto-fetch Invoice Number from server
-fetch("https://invoice.learnwithsaqii.online/api/invoices/next-number")
+fetch(`${API_URL}/next-number`)
     .then(res => res.json())
     .then(data => {
         if (data.success) {
@@ -16,6 +17,7 @@ fetch("https://invoice.learnwithsaqii.online/api/invoices/next-number")
         console.error(err);
         alert("Error connecting to server.");
     });
+
 
 // Auto-fill today's date and invoice ID
 window.addEventListener("DOMContentLoaded", function () {
@@ -103,15 +105,16 @@ document.getElementById("save-invoice-btn").addEventListener("click", function (
         if (data.success) {
             alert(`✅ Invoice saved to database! Invoice ID: ${invoiceId}`);
 
-            // Increment invoice number after save
-            fetch("http://localhost:5000/api/invoices/next-number")
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        const nextNumber = data.nextInvoiceNumber;
-                        document.getElementById("invoice-id").value = `INV-${String(nextNumber).padStart(3, "0")}`;
-                    }
-                });
+// Increment invoice number after save
+fetch(`${API_URL}/next-number`)
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            const nextNumber = data.nextInvoiceNumber;
+            document.getElementById("invoice-id").value = `INV-${String(nextNumber).padStart(3, "0")}`;
+        }
+    });
+
 
             // Clear form
             document.getElementById("client-name").value = "";
