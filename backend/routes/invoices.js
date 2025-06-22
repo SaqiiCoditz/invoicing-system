@@ -20,7 +20,7 @@ router.get('/next-number', (req, res) => {
     db.query('SELECT MAX(id) AS maxId FROM invoices', (err, results) => {
         if (err) {
             console.error('Error getting next invoice number:', err);
-            res.json({ success: false });
+            res.status(500).json({ success: false });
         } else {
             const nextNumber = (results[0].maxId || 0) + 1;
             res.json({ success: true, nextInvoiceNumber: nextNumber });

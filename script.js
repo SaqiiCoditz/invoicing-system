@@ -2,7 +2,7 @@ let invoiceItems = [];
 let invoiceCounter = 1;
 
 // Auto-fetch Invoice Number from server
-fetch("http://localhost:5000/api/invoices/next-number")
+fetch("https://invoice.learnwithsaqii.online/api/invoices/next-number")
     .then(res => res.json())
     .then(data => {
         if (data.success) {
@@ -93,7 +93,7 @@ document.getElementById("save-invoice-btn").addEventListener("click", function (
 
 
 
-    fetch("http://localhost:5000/api/invoices", {
+    fetch("https://invoice.learnwithsaqii.online/api/invoices", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
