@@ -1,12 +1,12 @@
-# Force HTTPS
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
+PassengerAppRoot "/home/dizzysmm/invoice.learnwithsaqii.online"
+PassengerBaseURI "/"
+PassengerNodejs "/home/dizzysmm/nodevenv/invoice.learnwithsaqii.online/18/bin/node"
+PassengerAppType node
+PassengerStartupFile server.js
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
+
+# ✅ Force HTTPS for entire site
 RewriteEngine On
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-
-# Optional: If you're also serving a frontend from public_html
-# and want to allow clean URLs, you can add:
-# (Uncomment below if needed)
-
-# RewriteCond %{REQUEST_FILENAME} !-f
-# RewriteCond %{REQUEST_FILENAME} !-d
-# RewriteRule ^ index.html [QSA,L]
