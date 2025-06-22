@@ -104,10 +104,11 @@
 <body>
 
     <h1>All Invoices</h1>
+<div class="search-bar">
+    <input type="text" id="search-input" placeholder="Search by Invoice Number or Client Name..." />
+</div>
+<div id="results-count" style="margin-bottom: 15px; color: #555;"></div>
 
-    <div class="search-bar">
-        <input type="text" id="search-input" placeholder="Search by client name..." />
-    </div>
 
     <table id="invoice-table">
         <thead>
@@ -319,6 +320,8 @@ function filterInvoices() {
     const query = document.getElementById("search-input").value.toLowerCase();
     const rows = document.querySelectorAll("#invoice-table tbody tr");
 
+    let visibleCount = 0;
+
     rows.forEach(row => {
         const invoiceNumber = row.children[0].textContent.toLowerCase();
         const clientName = row.children[2].textContent.toLowerCase();
@@ -326,10 +329,14 @@ function filterInvoices() {
         // Show if query matches either Invoice Number OR Client Name
         if (invoiceNumber.includes(query) || clientName.includes(query)) {
             row.style.display = "";
+            visibleCount++;
         } else {
             row.style.display = "none";
         }
     });
+
+    // Update results count
+    document.getElementById("results-count").textContent = `Results found: ${visibleCount}`;
 }
 
     </script>
