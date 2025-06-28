@@ -1,12 +1,11 @@
-# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
+# Node.js Passenger App Setup
 PassengerAppRoot "/home/saqiicod/invoice.saqiicoditz.online"
 PassengerBaseURI "/"
 PassengerNodejs "/home/saqiicod/nodevenv/invoice.saqiicoditz.online/18/bin/node"
 PassengerAppType node
 PassengerStartupFile server.js
-# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
 
-# ✅ Force HTTPS for entire site
+# Force HTTPS
 RewriteEngine On
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
