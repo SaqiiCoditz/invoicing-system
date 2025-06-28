@@ -122,6 +122,7 @@
           <th>Invoice Number</th>
           <th>Date</th>
           <th>Client Name</th>
+          <th>Order ID</th>
           <th>Total</th>
           <th>Actions</th>
         </tr>
@@ -177,6 +178,7 @@ const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
                     <td>${inv.invoiceNumber}</td>
                     <td>${formattedDate}</td>
                     <td>${inv.clientName}</td>
+                    <td>${inv.orderId}</td>
                     <td>${inv.total}</td>
                     <td>
                         <button onclick="previewInvoice(${inv.id})">View Invoice</button>
