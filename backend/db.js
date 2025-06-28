@@ -2,9 +2,9 @@ const mysql = require('mysql2');
 
 const db = mysql.createConnection({
     host: 'localhost', // most cPanel servers use localhost, unless yours shows otherwise
-    user: 'dizzysmm_invoicing_db',
-    password: 'dizzysmm_invoicing_db',
-    database: 'dizzysmm_invoicing_db'
+    user: 'saqiicod_invoicing_db',
+    password: 'saqiicod_invoicing_db',
+    database: 'saqiicod_invoicing_db'
 });
 
 db.connect((err) => {

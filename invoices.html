@@ -140,7 +140,7 @@
         });
 
         function fetchInvoices() {
-            fetch("https://invoice.learnwithsaqii.online/api/invoices")
+            fetch("https://invoice.saqiicoditz.online/api/invoices")
                 .then(res => res.json())
                 .then(data => {
                     renderTable(data);
@@ -177,7 +177,7 @@
         }
 
 function previewInvoice(id) {
-    fetch(`https://invoice.learnwithsaqii.online/api/invoices/${id}`)
+    fetch(`https://invoice.saqiicoditz.online/api/invoices/${id}`)
         .then(res => {
             if (!res.ok) {
                 throw new Error(`HTTP error! status: ${res.status} ${res.statusText}`);

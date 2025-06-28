@@ -1,6 +1,6 @@
 let invoiceItems = [];
 let invoiceCounter = 1;
-const API_URL = "https://invoice.learnwithsaqii.online/api/invoices";
+const API_URL = "https://invoice.saqiicoditz.online/api/invoices";
 
 // Auto-fetch Invoice Number from server
 fetch(`${API_URL}/next-number`)
@@ -93,7 +93,7 @@ document.getElementById("save-invoice-btn").addEventListener("click", function (
 
 
 
-    fetch("https://invoice.learnwithsaqii.online/api/invoices", {
+    fetch("https://invoice.saqiicoditz.online/api/invoices", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

@@ -10,7 +10,7 @@ const invoicesRouter = require('./routes/invoices');
 
 // Middlewares
 const corsOptions = {
-    origin: 'https://invoice.learnwithsaqii.online',
+    origin: 'https://invoice.saqiicoditz.online',
     methods: ['GET','POST','PUT','DELETE','OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 };

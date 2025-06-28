@@ -1,7 +1,7 @@
 # DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
-PassengerAppRoot "/home/dizzysmm/invoice.learnwithsaqii.online"
+PassengerAppRoot "/home/dizzysmm/invoice.saqiicoditz.online"
 PassengerBaseURI "/"
-PassengerNodejs "/home/dizzysmm/nodevenv/invoice.learnwithsaqii.online/18/bin/node"
+PassengerNodejs "/home/dizzysmm/nodevenv/invoice.saqiicoditz.online/18/bin/node"
 PassengerAppType node
 PassengerStartupFile server.js
 # DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
