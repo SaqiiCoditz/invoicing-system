@@ -169,8 +169,9 @@
           const tr = document.createElement("tr");
 
           // Format date to DD/MM/YYYY
-          const dateParts = inv.date.split("-");
-          const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+const dateOnly = inv.date.split("T")[0];
+const dateParts = dateOnly.split("-");
+const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
 
           tr.innerHTML = `
                     <td>${inv.invoiceNumber}</td>
