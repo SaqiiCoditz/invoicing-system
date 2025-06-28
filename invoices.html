@@ -1,214 +1,256 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>All Invoices - Invoicing System</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f9fafb;
-            color: #333;
-            padding: 20px;
-        }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f9fafb;
+        color: #333;
+        padding: 20px;
+      }
 
-        h1 {
-            color: #2563eb;
-            margin-bottom: 20px;
-        }
+      h1 {
+        color: #2563eb;
+        margin-bottom: 20px;
+      }
 
-        .search-bar {
-            margin-bottom: 15px;
-        }
+      .search-bar {
+        margin-bottom: 15px;
+      }
 
-        .search-bar input {
-            padding: 8px;
-            width: 300px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-        }
+      .search-bar input {
+        padding: 8px;
+        width: 300px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+      }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: #fff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-        }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      }
 
-        th, td {
-            padding: 12px 15px;
-            border: 1px solid #eee;
-            text-align: left;
-        }
+      th,
+      td {
+        padding: 12px 15px;
+        border: 1px solid #eee;
+        text-align: left;
+      }
 
-        th {
-            background: #f0f4ff;
-            color: #2563eb;
-        }
+      th {
+        background: #f0f4ff;
+        color: #2563eb;
+      }
 
-        button {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            background-color: #2563eb;
-            color: white;
-            transition: background 0.3s;
-        }
+      button {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        background-color: #2563eb;
+        color: white;
+        transition: background 0.3s;
+      }
 
-        button:hover {
-            background-color: #1e40af;
-        }
+      button:hover {
+        background-color: #1e40af;
+      }
 
-        /* Modal styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 999;
-        }
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+      }
 
-        .modal-content {
-            background: #fff;
-            padding: 20px;
-            max-width: 850px;
-            border-radius: 10px;
-            position: relative;
-        }
+      .modal-content {
+        background: #fff;
+        padding: 20px;
+        max-width: 850px;
+        border-radius: 10px;
+        position: relative;
+      }
 
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            background: #f44336;
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            font-size: 16px;
-            cursor: pointer;
-        }
+      .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        background: #f44336;
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
+        cursor: pointer;
+      }
 
-        .download-btn {
-            margin-top: 10px;
-        }
-
+      .download-btn {
+        margin-top: 10px;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <h1>All Invoices</h1>
-<div class="search-bar">
-    <input type="text" id="search-input" placeholder="Search by Invoice Number or Client Name..." />
-</div>
-<div id="results-count" style="margin-bottom: 15px; color: #555;"></div>
-
+    <div class="search-bar">
+      <input
+        type="text"
+        id="search-input"
+        placeholder="Search by Invoice Number or Client Name..."
+      />
+    </div>
+    <div id="results-count" style="margin-bottom: 15px; color: #555"></div>
 
     <table id="invoice-table">
-        <thead>
-            <tr>
-                <th>Invoice Number</th>
-                <th>Date</th>
-                <th>Client Name</th>
-                <th>Total</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
+      <thead>
+        <tr>
+          <th>Invoice Number</th>
+          <th>Date</th>
+          <th>Client Name</th>
+          <th>Total</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
     </table>
 
     <!-- Modal for preview -->
     <div class="modal" id="invoice-modal">
-        <div class="modal-content" id="modal-content">
-            <button class="close-btn" onclick="closeModal()">&times;</button>
-            <div id="invoice-preview"></div>
-            <button class="download-btn" onclick="downloadInvoice()">Download as PNG</button>
-        </div>
+      <div class="modal-content" id="modal-content">
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+        <div id="invoice-preview"></div>
+        <button class="download-btn" onclick="downloadInvoice()">
+          Download as PNG
+        </button>
+      </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            fetchInvoices();
-            document.getElementById("search-input").addEventListener("input", filterInvoices);
-        });
+      document.addEventListener("DOMContentLoaded", () => {
+        fetchInvoices();
+        document
+          .getElementById("search-input")
+          .addEventListener("input", filterInvoices);
+      });
 
-        function fetchInvoices() {
-            fetch("https://invoice.saqiicoditz.online/api/invoices")
-                .then(res => res.json())
-                .then(data => {
-                    renderTable(data);
-                })
-                .catch(err => {
-                    console.error("Error loading invoices:", err);
-                    alert("Failed to load invoices.");
-                });
-        }
+      function fetchInvoices() {
+        fetch("https://invoice.saqiicoditz.online/api/invoices")
+          .then((res) => res.json())
+          .then((data) => {
+            renderTable(data);
+          })
+          .catch((err) => {
+            console.error("Error loading invoices:", err);
+            alert("Failed to load invoices.");
+          });
+      }
 
-        function renderTable(invoices) {
-            const tbody = document.querySelector("#invoice-table tbody");
-            tbody.innerHTML = "";
+      function renderTable(invoices) {
+        const tbody = document.querySelector("#invoice-table tbody");
+        tbody.innerHTML = "";
 
-            invoices.forEach(inv => {
-                const tr = document.createElement("tr");
+        invoices.forEach((inv) => {
+          const tr = document.createElement("tr");
 
-                // Format date to DD/MM/YYYY
-                const dateParts = inv.date.split("-");
-                const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+          // Format date to DD/MM/YYYY
+          const dateParts = inv.date.split("-");
+          const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
 
-                tr.innerHTML = `
+          tr.innerHTML = `
                     <td>${inv.invoiceNumber}</td>
                     <td>${formattedDate}</td>
                     <td>${inv.clientName}</td>
                     <td>${inv.total}</td>
                     <td>
                         <button onclick="previewInvoice(${inv.id})">View Invoice</button>
+                        <button onclick="deleteInvoice(${inv.id})" style="background:#dc2626; margin-left: 6px;">Delete</button>
                     </td>
+
                 `;
 
-                tbody.appendChild(tr);
-            });
-        }
+          tbody.appendChild(tr);
+        });
+      }
 
-function previewInvoice(id) {
-    fetch(`https://invoice.saqiicoditz.online/api/invoices/${id}`)
-        .then(res => {
-            if (!res.ok) {
-                throw new Error(`HTTP error! status: ${res.status} ${res.statusText}`);
-            }
-            return res.json();
+      //Delete invoice Function
+
+      function deleteInvoice(id) {
+    if (confirm(`Are you sure you want to delete Invoice ID ${id}?`)) {
+        fetch(`http://invoice.saqiicoditz.online/api/invoices/${id}`, {
+            method: "DELETE"
         })
+        .then(res => res.json())
         .then(data => {
             if (data.success) {
-                showInvoiceModal(data.invoice);
+                alert("Invoice deleted successfully.");
+                fetchInvoices(); // refresh the list
+
+                // Auto preview previous invoice
+                const previousId = id - 1;
+                if (previousId > 0) previewInvoice(previousId);
             } else {
-                alert("Error loading invoice: " + (data.message || 'Unknown error'));
+                alert("Failed to delete invoice.");
             }
         })
         .catch(err => {
-            console.error("Error fetching invoice:", err);
-            alert("Failed to load invoice: " + err.message);
+            console.error("Error deleting invoice:", err);
+            alert("Error occurred while deleting.");
         });
+    }
 }
 
 
-function showInvoiceModal(invoice) {
-    const items = JSON.parse(invoice.items);
+      function previewInvoice(id) {
+        fetch(`https://invoice.saqiicoditz.online/api/invoices/${id}`)
+          .then((res) => {
+            if (!res.ok) {
+              throw new Error(
+                `HTTP error! status: ${res.status} ${res.statusText}`
+              );
+            }
+            return res.json();
+          })
+          .then((data) => {
+            if (data.success) {
+              showInvoiceModal(data.invoice);
+            } else {
+              alert(
+                "Error loading invoice: " + (data.message || "Unknown error")
+              );
+            }
+          })
+          .catch((err) => {
+            console.error("Error fetching invoice:", err);
+            alert("Failed to load invoice: " + err.message);
+          });
+      }
 
-    // Format date to DD/MM/YYYY
-    const dateObj = new Date(invoice.date);
-    const day = String(dateObj.getDate()).padStart(2, '0');
-    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-    const year = dateObj.getFullYear();
-    const formattedDate = `${day}/${month}/${year}`;
+      function showInvoiceModal(invoice) {
+        const items = JSON.parse(invoice.items);
 
-    let html = `
+        // Format date to DD/MM/YYYY
+        const dateObj = new Date(invoice.date);
+        const day = String(dateObj.getDate()).padStart(2, "0");
+        const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+        const year = dateObj.getFullYear();
+        const formattedDate = `${day}/${month}/${year}`;
+
+        let html = `
     <div style="
         width: 300px;
         height: auto;
@@ -247,16 +289,20 @@ function showInvoiceModal(invoice) {
                 <tbody>
 `;
 
-items.forEach(item => {
-    html += `
+        items.forEach((item) => {
+          html += `
         <tr>
-            <td style="padding: 12px; border: 1px solid #f2f2f2;">${item.name}</td>
-            <td style="padding: 12px; border: 1px solid #f2f2f2; text-align: right;">${item.price.toFixed(2)}</td>
+            <td style="padding: 12px; border: 1px solid #f2f2f2;">${
+              item.name
+            }</td>
+            <td style="padding: 12px; border: 1px solid #f2f2f2; text-align: right;">${item.price.toFixed(
+              2
+            )}</td>
         </tr>
     `;
-});
+        });
 
-html += `
+        html += `
                 </tbody>
             </table>
         </div>
@@ -283,62 +329,61 @@ html += `
     </div>
 `;
 
+        document.getElementById("invoice-preview").innerHTML = html;
+        document.getElementById("invoice-modal").style.display = "flex";
+      }
 
-    document.getElementById("invoice-preview").innerHTML = html;
-    document.getElementById("invoice-modal").style.display = "flex";
-}
+      function closeModal() {
+        document.getElementById("invoice-modal").style.display = "none";
+      }
+      function downloadInvoice() {
+        const previewElement = document.getElementById("invoice-preview");
 
+        html2canvas(previewElement, { useCORS: true, scale: 2 })
+          .then((canvas) => {
+            const link = document.createElement("a");
 
+            // Get invoice number from h2 with id
+            const invoiceId = document
+              .getElementById("preview-invoice-id")
+              .textContent.trim();
 
+            link.download = `${invoiceId}.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+          })
+          .catch((err) => {
+            console.error("Failed to export invoice.", err);
+            alert("Failed to export invoice.");
+          });
+      }
 
+      function filterInvoices() {
+        const query = document
+          .getElementById("search-input")
+          .value.toLowerCase();
+        const rows = document.querySelectorAll("#invoice-table tbody tr");
 
-        function closeModal() {
-            document.getElementById("invoice-modal").style.display = "none";
-        }
-function downloadInvoice() {
-    const previewElement = document.getElementById("invoice-preview");
+        let visibleCount = 0;
 
-    html2canvas(previewElement, { useCORS: true, scale: 2 }).then(canvas => {
-        const link = document.createElement("a");
+        rows.forEach((row) => {
+          const invoiceNumber = row.children[0].textContent.toLowerCase();
+          const clientName = row.children[2].textContent.toLowerCase();
 
-        // Get invoice number from h2 with id
-        const invoiceId = document.getElementById("preview-invoice-id").textContent.trim();
-
-        link.download = `${invoiceId}.png`;
-        link.href = canvas.toDataURL("image/png");
-        link.click();
-    }).catch(err => {
-        console.error("Failed to export invoice.", err);
-        alert("Failed to export invoice.");
-    });
-}
-
-
-
-
-function filterInvoices() {
-    const query = document.getElementById("search-input").value.toLowerCase();
-    const rows = document.querySelectorAll("#invoice-table tbody tr");
-
-    let visibleCount = 0;
-
-    rows.forEach(row => {
-        const invoiceNumber = row.children[0].textContent.toLowerCase();
-        const clientName = row.children[2].textContent.toLowerCase();
-
-        // Show if query matches either Invoice Number OR Client Name
-        if (invoiceNumber.includes(query) || clientName.includes(query)) {
+          // Show if query matches either Invoice Number OR Client Name
+          if (invoiceNumber.includes(query) || clientName.includes(query)) {
             row.style.display = "";
             visibleCount++;
-        } else {
+          } else {
             row.style.display = "none";
-        }
-    });
+          }
+        });
 
-    // Update results count
-    document.getElementById("results-count").textContent = `Results found: ${visibleCount}`;
-}
-
+        // Update results count
+        document.getElementById(
+          "results-count"
+        ).textContent = `Results found: ${visibleCount}`;
+      }
     </script>
-</body>
+  </body>
 </html>
