@@ -175,7 +175,7 @@ function renderTable(invoices) {
         const dateParts = dateOnly.split("-");
         const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
 
-        // ✅ Parse items
+        // Parse items
         let itemsSummary = '';
         try {
             const parsedItems = JSON.parse(inv.items);
