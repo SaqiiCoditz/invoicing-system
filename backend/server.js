@@ -10,7 +10,7 @@ const invoicesRouter = require('./routes/invoices');
 
 // Middlewares
 const corsOptions = {
-  origin: 'https://your-new-domain.com',
+  origin: 'https://invoice.saqiicoditz.online',
   methods: ['GET','POST','PUT','DELETE','OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 };
@@ -23,12 +23,12 @@ app.use('/api/invoices', invoicesRouter);
 
 // Test route
 app.get('/', (req, res) => {
-    res.send('Invoicing System Backend Running 🚀');
+    res.send('Invoicing System Backend Running ðŸš€');
 });
 
 // Start server
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(process.env.PORT || 5000, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
