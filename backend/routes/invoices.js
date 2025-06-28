@@ -65,13 +65,14 @@ router.get('/:id', (req, res) => {
     );
 });
 
-//delete route
+// DELETE invoice by ID
 router.delete('/:id', (req, res) => {
     const invoiceId = req.params.id;
-    db.query("DELETE FROM invoices WHERE id = ?", [invoiceId], (err, result) => {
+
+    db.query('DELETE FROM invoices WHERE id = ?', [invoiceId], (err, result) => {
         if (err) {
-            console.error("Delete error:", err);
-            res.json({ success: false });
+            console.error('Error deleting invoice:', err);
+            res.json({ success: false, message: 'Database error.' });
         } else {
             res.json({ success: true });
         }
