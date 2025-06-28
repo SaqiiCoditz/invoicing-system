@@ -68,6 +68,13 @@ router.get('/:id', (req, res) => {
 // DELETE invoice by ID
 router.delete('/:id', (req, res) => {
     const invoiceId = req.params.id;
+    const { passcode } = req.body;
+
+    const ADMIN_PASSCODE = "0911"; // Change this!
+
+    if (passcode !== ADMIN_PASSCODE) {
+        return res.status(403).json({ success: false, message: "Invalid passcode." });
+    }
 
     db.query('DELETE FROM invoices WHERE id = ?', [invoiceId], (err, result) => {
         if (err) {
@@ -78,6 +85,7 @@ router.delete('/:id', (req, res) => {
         }
     });
 });
+
 
 
 module.exports = router;
