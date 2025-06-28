@@ -10,9 +10,9 @@ const invoicesRouter = require('./routes/invoices');
 
 // Middlewares
 const corsOptions = {
-    origin: 'https://invoice.saqiicoditz.online',
-    methods: ['GET','POST','PUT','DELETE','OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+  origin: 'https://your-new-domain.com',
+  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 };
 app.use(cors(corsOptions));
 
