@@ -1,7 +1,8 @@
+name: nodejs
+type: nodejs
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/saqiicod/invoice.saqiicoditz.online
-    - /bin/cp -R * $DEPLOYPATH
-    - /bin/cp -R .htaccess $DEPLOYPATH || true
-    - cd $DEPLOYPATH && npm install
-    - cd $DEPLOYPATH && npx pm2 describe invoice_backend || npx pm2 start server.js --name "invoice_backend" --watch
+    - export NODE_ENV=production
+    - cd /home/saqiicod/invoice.saqiicoditz.online
+    - /opt/cpanel/ea-nodejs18/bin/npm install
+    - touch tmp/restart.txt
