@@ -17,14 +17,21 @@ router.get('/', (req, res) => {
 
 // GET next invoice number
 router.get('/next-number', (req, res) => {
-    db.query('SELECT MAX(id) AS maxId FROM invoices', (err, results) => {
+    const query = 'SELECT invoiceNumber FROM invoices ORDER BY id DESC LIMIT 1';
+
+    db.query(query, (err, results) => {
         if (err) {
-            console.error('Error getting next invoice number:', err);
-            res.status(500).json({ success: false });
-        } else {
-            const nextNumber = (results[0].maxId || 0) + 1;
-            res.json({ success: true, nextInvoiceNumber: nextNumber });
+            console.error('Error getting invoice number:', err.message);
+            return res.status(500).json({ success: false, message: 'Database error' });
         }
+
+        let nextNumber = 1;
+        if (results.length > 0 && results[0].invoiceNumber) {
+            const last = parseInt(results[0].invoiceNumber.replace("INV-", ""));
+            nextNumber = isNaN(last) ? 1 : last + 1;
+        }
+
+        res.json({ success: true, nextInvoiceNumber: nextNumber });
     });
 });
 
