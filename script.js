@@ -24,6 +24,7 @@ window.addEventListener("DOMContentLoaded", function () {
   document.getElementById("invoice-date").value = today;
 });
 
+
 // Add items
 document.getElementById("add-item-btn").addEventListener("click", function () {
   const name = document.getElementById("item-name").value.trim();
