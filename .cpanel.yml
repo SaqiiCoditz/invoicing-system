@@ -3,6 +3,6 @@ type: nodejs
 deployment:
   tasks:
     - export NODE_ENV=production
-    - cd /home/saqiicod/invoice.saqiicoditz.online
+    - cd /home/saqiicod/invoice.saqiicoditz.online/backend
     - /opt/cpanel/ea-nodejs18/bin/npm install
     - touch tmp/restart.txt
