@@ -15,9 +15,13 @@ router.get('/', (req, res) => {
     });
 });
 
-// GET next invoice number
 router.get('/next-number', (req, res) => {
-    const query = 'SELECT invoiceNumber FROM invoices ORDER BY id DESC LIMIT 1';
+    // Query the highest numerical part of valid invoice numbers
+    const query = `
+        SELECT MAX(CAST(SUBSTRING(invoiceNumber, 5) AS UNSIGNED)) AS maxNum 
+        FROM invoices 
+        WHERE invoiceNumber REGEXP '^INV-[0-9]+$'
+    `;
 
     db.query(query, (err, results) => {
         if (err) {
@@ -25,11 +29,8 @@ router.get('/next-number', (req, res) => {
             return res.status(500).json({ success: false, message: 'Database error' });
         }
 
-        let nextNumber = 1;
-        if (results.length > 0 && results[0].invoiceNumber) {
-            const last = parseInt(results[0].invoiceNumber.replace("INV-", ""));
-            nextNumber = isNaN(last) ? 1 : last + 1;
-        }
+        const maxNum = results[0].maxNum;
+        const nextNumber = maxNum === null ? 1 : maxNum + 1;
 
         res.json({ success: true, nextInvoiceNumber: nextNumber });
     });
