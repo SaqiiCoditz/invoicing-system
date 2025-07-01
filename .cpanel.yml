@@ -2,7 +2,7 @@ name: nodejs
 type: nodejs
 deployment:
   tasks:
-    - export NODE_ENV=production
+    - export NODE_OPTIONS=--max-old-space-size=256
     - cd /home/saqiicod/invoice.saqiicoditz.online/backend
     - /opt/cpanel/ea-nodejs18/bin/npm install
     - touch tmp/restart.txt
