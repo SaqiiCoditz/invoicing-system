@@ -15,8 +15,8 @@ router.get('/', (req, res) => {
     });
 });
 
+//Fetch invoice number
 router.get('/next-number', (req, res) => {
-    // Query the highest numerical part of valid invoice numbers
     const query = `
         SELECT MAX(CAST(SUBSTRING(invoiceNumber, 5) AS UNSIGNED)) AS maxNum 
         FROM invoices 
@@ -25,17 +25,24 @@ router.get('/next-number', (req, res) => {
 
     db.query(query, (err, results) => {
         if (err) {
-            console.error('Error getting invoice number:', err.message);
-            return res.status(500).json({ success: false, message: 'Database error' });
+            console.error('Database Error:', err);
+            console.error('Failed Query:', query);
+            return res.status(500).json({ 
+                success: false, 
+                message: 'Database error: ' + err.message,
+                sqlError: err.sqlMessage  // Include SQL error details
+            });
         }
 
-        const maxNum = results[0].maxNum;
-        const nextNumber = maxNum === null ? 1 : maxNum + 1;
+        console.log('Query Results:', results); // Log actual results
+        
+        if (results.length === 0 || results[0].maxNum === null) {
+            console.log('No valid invoices found - starting from 1');
+            return res.json({ success: true, nextInvoiceNumber: 1 });
+        }
 
-res.json({ 
-  success: true, 
-  nextInvoiceNumber: `INV-${String(nextNumber).padStart(3, "0")}`
-});
+        const nextNumber = results[0].maxNum + 1;
+        res.json({ success: true, nextInvoiceNumber: nextNumber });
     });
 });
 

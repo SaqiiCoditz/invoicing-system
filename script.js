@@ -4,17 +4,26 @@ const API_URL = "https://invoice.saqiicoditz.online/api/invoices";
 
 // Auto-fetch Invoice Number from server
 fetch(`https://invoice.saqiicoditz.online/api/invoices/next-number`)
-  .then(res => res.json())
+  .then(res => {
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    return res.json();
+  })
   .then(data => {
     if (data.success) {
-      document.getElementById("invoice-id").value = data.nextInvoiceNumber;
+      const nextNumber = data.nextInvoiceNumber;
+      document.getElementById("invoice-id").value = `INV-${String(nextNumber).padStart(3, "0")}`;
     } else {
-      alert("Error fetching invoice number: " + (data.message || "Unknown error"));
+      // Show detailed backend error
+      const errorMsg = data.message || data.sqlError || "Unknown server error";
+      alert(`Backend Error: ${errorMsg}`);
+      console.error('Backend Error Details:', data);
     }
   })
   .catch(err => {
-    console.error('Fetch Error:', err);
-    alert("Network error. Please check your connection.");
+    console.error('Network Error:', err);
+    alert(`Network Error: ${err.message}`);
   });
 // Auto-fill today's date
 window.addEventListener("DOMContentLoaded", function () {
