@@ -3,7 +3,7 @@ let invoiceCounter = 1;
 const API_URL = "https://invoice.saqiicoditz.online/api/invoices";
 
 // Auto-fetch Invoice Number from server
-fetch(`${API_URL}/next-number`)
+fetch(`https://invoice.saqiicoditz.online/api/invoices/next-number`)
   .then(res => res.json())
   .then(data => {
     if (data.success) {
