@@ -105,7 +105,7 @@ document.getElementById("save-invoice-btn").addEventListener("click", function (
         alert(`✅ Invoice saved to database! Invoice ID: ${invoiceId}`);
 
         // Increment invoice number
-        fetch(`${API_URL}/next-number`)
+        fetch(`https://invoice.saqiicoditz.online/api/invoices/next-number`)
           .then(res => res.json())
           .then(data => {
             if (data.success) {
