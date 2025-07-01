@@ -32,7 +32,10 @@ router.get('/next-number', (req, res) => {
         const maxNum = results[0].maxNum;
         const nextNumber = maxNum === null ? 1 : maxNum + 1;
 
-        res.json({ success: true, nextInvoiceNumber: nextNumber });
+res.json({ 
+  success: true, 
+  nextInvoiceNumber: `INV-${String(nextNumber).padStart(3, "0")}`
+});
     });
 });
 

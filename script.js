@@ -7,17 +7,15 @@ fetch(`https://invoice.saqiicoditz.online/api/invoices/next-number`)
   .then(res => res.json())
   .then(data => {
     if (data.success) {
-      const nextNumber = data.nextInvoiceNumber;
-      document.getElementById("invoice-id").value = `INV-${String(nextNumber).padStart(3, "0")}`;
+      document.getElementById("invoice-id").value = data.nextInvoiceNumber;
     } else {
-      alert("Error fetching invoice number from server.");
+      alert("Error fetching invoice number: " + (data.message || "Unknown error"));
     }
   })
   .catch(err => {
-    console.error(err);
-    alert("Error connecting to server.");
+    console.error('Fetch Error:', err);
+    alert("Network error. Please check your connection.");
   });
-
 // Auto-fill today's date
 window.addEventListener("DOMContentLoaded", function () {
   const today = new Date().toISOString().substr(0, 10);
@@ -88,7 +86,7 @@ document.getElementById("save-invoice-btn").addEventListener("click", function (
     invoiceNumber: invoiceId,
     date: invoiceDate,
     clientName: clientName,
-    orderId: orderId, // ✅ New
+    orderId: orderId, 
     items: JSON.stringify(invoiceItems),
     total: total
   };
