@@ -14,38 +14,41 @@ router.get('/', (req, res) => {
         }
     });
 });
-
-//Fetch invoice number
 router.get('/next-number', (req, res) => {
     const query = `
-        SELECT MAX(CAST(SUBSTRING(invoiceNumber, 5) AS UNSIGNED)) AS maxNum 
+        SELECT invoiceNumber 
         FROM invoices 
-        WHERE invoiceNumber REGEXP '^INV-[0-9]+$'
+        ORDER BY created_at DESC 
+        LIMIT 1
     `;
 
     db.query(query, (err, results) => {
         if (err) {
             console.error('Database Error:', err);
-            console.error('Failed Query:', query);
             return res.status(500).json({ 
                 success: false, 
-                message: 'Database error: ' + err.message,
-                sqlError: err.sqlMessage  // Include SQL error details
+                message: 'Database error',
+                error: err.message
             });
         }
 
-        console.log('Query Results:', results); // Log actual results
+        let nextNumber = 1;
         
-        if (results.length === 0 || results[0].maxNum === null) {
-            console.log('No valid invoices found - starting from 1');
-            return res.json({ success: true, nextInvoiceNumber: 1 });
+        if (results.length > 0) {
+            const lastInv = results[0].invoiceNumber;
+            // Robust number extraction
+            const numbers = lastInv.match(/\d+/g);
+            if (numbers && numbers.length > 0) {
+                nextNumber = parseInt(numbers.pop()) + 1;
+            }
         }
 
-        const nextNumber = results[0].maxNum + 1;
-        res.json({ success: true, nextInvoiceNumber: nextNumber });
+        res.json({ 
+            success: true, 
+            nextInvoiceNumber: nextNumber 
+        });
     });
 });
-
 // POST create new invoice
 router.post('/', (req, res) => {
     const { invoiceNumber, date, clientName, orderId, items, total } = req.body;
